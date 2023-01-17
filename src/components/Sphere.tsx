@@ -27,24 +27,28 @@ const Sphere = () => {
     spotLight.position.set(0, 64, 32);
     scene.add(spotLight);
 
-    const boxGeometry = new THREE.BoxGeometry(16, 16, 16);
-    const boxMaterial = new THREE.MeshNormalMaterial();
-    const cube = new THREE.Mesh(boxGeometry, boxMaterial);
-    scene.add(cube);
+    const geometry = new THREE.SphereGeometry(15, 32, 16);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
 
+    // const boxGeometry = new THREE.BoxGeometry(16, 16, 16);
+    // const boxMaterial = new THREE.MeshNormalMaterial();
+    // const cube = new THREE.Mesh(boxGeometry, boxMaterial);
+    // scene.add(cube);
 
-    const controls =  new OrbitControls(camera, renderer.domElement)
+    const controls = new OrbitControls(camera, renderer.domElement);
 
-    const stats =  Stats()
+    const stats = Stats();
     document.body.appendChild(stats.dom);
 
     const animate = () => {
       renderer.render(scene, camera);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+      sphere.rotation.x += 0.01;
+      // cube.rotation.y += 0.01;
 
-      stats.update()
-      controls.update()
+      stats.update();
+      controls.update();
       window.requestAnimationFrame(animate);
     };
 
@@ -59,4 +63,3 @@ const Sphere = () => {
 };
 
 export default Sphere;
-

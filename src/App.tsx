@@ -1,11 +1,12 @@
 import Sphere from "./components/Sphere";
-import Template from "./components/Tempmlat";
+import Template from "./components/Tempmlate";
+import WebGl from "./components/WebGl";
 
 function App() {
   return (
     <div>
-      <Sphere />
-      {/* <Template /> */}
+      {/* <Sphere /> */}
+      <WebGl />
     </div>
   );
 }
