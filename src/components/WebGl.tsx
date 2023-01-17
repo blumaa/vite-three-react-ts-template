@@ -59,7 +59,7 @@ const WebGl = () => {
     scene.add(new THREE.AmbientLight("hsl(0, 0%, 20%)"));
 
     const light = new THREE.DirectionalLight("white", 1);
-    light.position.set(0, 4, 0);
+    light.position.set(0, 4, 4);
     scene.add(light);
     //
     const animate = () => {
@@ -87,7 +87,9 @@ const WebGl = () => {
       // Update camera properties
       camera.updateProjectionMatrix();
 
-      scene.rotation.y += 1 *.01
+      scene.rotation.z += Math.sin(Math.PI / 180);
+      // scene.rotation.y += Math.sin(Math.PI * 0.003);
+      // scene.rotation.x += Math.sin(Math.PI * 0.001);
       renderer.render(scene, camera);
 
       window.requestAnimationFrame(animate);
