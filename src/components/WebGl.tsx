@@ -1,9 +1,18 @@
 import React, { useEffect } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-const width = window.innerWidth;
-const height = window.innerHeight;
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
+
+function getRandomColor() {
+  var letters = "0123456789ABCDEF";
+  var color = "#";
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
 
 const WebGl = () => {
   useEffect(() => {
@@ -13,57 +22,76 @@ const WebGl = () => {
       antialias: true,
     });
     // web gl background color
-    renderer.setClearColor("hsl(0,0%,95%)", 1);
-    document.body.appendChild(renderer.domElement);
+    // renderer.setClearColor("hsl(0,0%,95%)", 1);
+    // document.body.appendChild(renderer.domElement);
 
     // set a camera
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
-    camera.position.set(4, 2, 2);
-    camera.lookAt(new THREE.Vector3());
+    const camera = new THREE.OrthographicCamera();
+    // camera.position.set(4, 2, 2);
+    // camera.lookAt(new THREE.Vector3());
 
     // setup camera controller
-    const controls = new OrbitControls(camera, renderer.domElement);
+    // const controls = new OrbitControls(camera, renderer.domElement);
 
     // setup a scene
     const scene = new THREE.Scene();
 
     // Re-use the same Geometry across all our cubes
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const box = new THREE.BoxGeometry(1, 1, 1);
 
-    // Basic "unlit" material with no depth
-    const material = new THREE.MeshBasicMaterial({
-      color: "red",
-    });
+    function rando(min: number, max: number) {
+      return Math.random() * (max - min) + min;
+    }
 
-    // scene.add(new THREE.AmbientLight("#59314f"));
+    for (let i = 0; i < 50; i++) {
+      const mesh = new THREE.Mesh(
+        box,
+        new THREE.MeshStandardMaterial({
+          color: getRandomColor(),
+        })
+      );
+      mesh.position.set(rando(-1, 1), rando(-1, 1), rando(-1, 1));
+      mesh.scale.set(rando(-1, 1), rando(-1, 1), rando(-1, 1));
+      mesh.scale.multiplyScalar(0.5);
+      scene.add(mesh);
+    }
 
-    // Create the mesh
-    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(new THREE.AmbientLight("hsl(0, 0%, 20%)"));
 
-    // Smaller cube
-    mesh.scale.setScalar(0.5);
-
-    // Then add the group to the scene
-    scene.add(mesh);
-
-    // const light = new THREE.PointLight("#45caf7", 1, 15.5);
-    // light.position.set(2, 2, -4).multiplyScalar(1.5);
-    // scene.add(light);
+    const light = new THREE.DirectionalLight("white", 1);
+    light.position.set(0, 4, 0);
+    scene.add(light);
     //
     const animate = () => {
       renderer.setPixelRatio(1);
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
+      renderer.setSize(viewportWidth, viewportHeight);
 
+      const aspect = viewportWidth / viewportHeight;
+
+      // Ortho zoom
+      const zoom = 2.0;
+
+      // Bounds
+      camera.left = -zoom * aspect;
+      camera.right = zoom * aspect;
+      camera.top = zoom;
+      camera.bottom = -zoom;
+
+      // Near/Far
+      camera.near = -100;
+      camera.far = 100;
+
+      // Set position & look at world center
+      camera.position.set(zoom, zoom, zoom);
+      camera.lookAt(new THREE.Vector3());
       // Update camera properties
       camera.updateProjectionMatrix();
 
-      mesh.rotation.y += 1 * 0.01;
-
+      scene.rotation.y += 1 *.01
       renderer.render(scene, camera);
 
       window.requestAnimationFrame(animate);
-      controls.update();
+      // controls.update();
     };
 
     animate();
